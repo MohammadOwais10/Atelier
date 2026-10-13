@@ -1,56 +1,66 @@
-# Welcome to your Expo app 👋
+# Atelier
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A small, production-grade art discovery app for iOS and Android, built with Expo
+Router. It browses the public collection of the **Cleveland Museum of Art**
+(Open Access API, no key required) and presents works as a printed museum
+catalogue.
 
-## Get started
+## What it does
 
-1. Install dependencies
+- **Collection list** — a curated, infinite-scrolling feed of public-domain works
+  with images, fetched from `openaccess-api.clevelandart.org`. Filter by medium
+  (painting, print, photograph, sculpture, drawing, textile).
+- **Detail screen** — full-bleed image with a parallax header, catalogue
+  metadata, the curatorial description, related works by the same artist, native
+  share, and a link through to the work on clevelandart.org.
+- **Loading / error / empty states** — bespoke shimmer skeletons, a designed
+  error state with retry, and a 404 screen.
+- **Pull to refresh** and infinite scroll.
+- Light and dark themes that follow the system.
 
-   ```bash
-   npm install
-   ```
+## Design
 
-2. Start the app
+The visual language is a warm "museum catalogue": bone paper by day and a
+lamp-lit gallery at night, a single vermilion accent, hairline rules, and an
+editorial type pairing of **Fraunces** (display) with **Inter** (text). Icons are
+a hand-drawn SVG set rather than a stock icon font, and the app icon is generated
+from the Fraunces monogram.
 
-   ```bash
-   npx expo start
-   ```
+## Stack
 
-In the output, you'll find options to open the app in a
+- [Expo](https://docs.expo.dev) SDK 57 + React Native, Expo Router (file routes in `src/app/`)
+- [`@tanstack/react-query`](https://tanstack.com/query) for fetching, caching, retries, pagination
+- `expo-image` (CDN images with cross-fade), `react-native-reanimated`, `react-native-svg`
+- TypeScript (strict), `eslint-config-expo`
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Structure
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+src/
+  app/                 # routes: _layout, index (list), artwork/[id] (detail), +not-found
+  components/
+    artwork/           # cards, hero, metadata grid, related rail, skeletons
+    ui/                # brand primitives: button, chip rail, icon set, state views, skeleton
+  lib/                 # api client, react-query hooks, formatting
+  theme/               # colour, type, spacing, motion tokens
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Commands
 
-### Other setup steps
+```bash
+npm install
+npm start           # dev server
+npm run ios         # iOS simulator
+npm run android     # Android emulator
+npm run lint        # eslint
+npm run typecheck   # tsc --noEmit
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Add native libraries with `npx expo install <pkg>` so versions stay SDK-compatible.
 
-## Learn more
+## Data
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Artwork data and images are provided by the Cleveland Museum of Art Open Access
+initiative and are, in almost all cases, released under CC0. Images are served
+from the museum's public CDN, which permits cross-origin embedding, so the same
+requests work on device and in the browser.
